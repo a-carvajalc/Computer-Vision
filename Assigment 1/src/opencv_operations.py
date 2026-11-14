@@ -43,7 +43,10 @@ def create_image(height, width, channels, dtype, fill_value):
         >>> np.all(img == 255)
         True
     """
-    raise NotImplementedError("create_image not yet implemented")
+    if channels == 1:
+        return np.full((height, width), fill_value, dtype=dtype)
+    else:
+        return np.full((height, width, channels), fill_value, dtype=dtype)
 
 
 def apply_blur(image, kernel_size):
@@ -66,7 +69,7 @@ def apply_blur(image, kernel_size):
         >>> blurred.shape
         (50, 50, 3)
     """
-    raise NotImplementedError("apply_blur not yet implemented")
+    return cv2.blur(image, kernel_size)
 
 
 def apply_gaussian_blur(image, kernel_size, sigma):
@@ -91,7 +94,7 @@ def apply_gaussian_blur(image, kernel_size, sigma):
         >>> img = np.random.randint(0, 256, (100, 100, 3), dtype=np.uint8)
         >>> blurred = apply_gaussian_blur(img, (5, 5), 1.0)
     """
-    raise NotImplementedError("apply_gaussian_blur not yet implemented")
+    return cv2.GaussianBlur(image, kernel_size, sigma)
 
 
 def apply_median_blur(image, kernel_size):
@@ -113,7 +116,7 @@ def apply_median_blur(image, kernel_size):
         >>> img = np.random.randint(0, 256, (50, 50, 3), dtype=np.uint8)
         >>> denoised = apply_median_blur(img, 5)
     """
-    raise NotImplementedError("apply_median_blur not yet implemented")
+    return cv2.medianBlur(image, kernel_size)
 
 
 def blend_images(src1, src2, alpha):
@@ -138,7 +141,7 @@ def blend_images(src1, src2, alpha):
         >>> blended = blend_images(img1, img2, 0.5)
         >>> blended[0, 0]  # Should be roughly [127, 127, 0] (yellow)
     """
-    raise NotImplementedError("blend_images not yet implemented")
+    return cv2.addWeighted(src1, alpha, src2, 1 - alpha, 0)
 
 
 def add_weighted_images(src1, alpha, src2, beta, gamma):
@@ -166,7 +169,7 @@ def add_weighted_images(src1, alpha, src2, beta, gamma):
         >>> result = add_weighted_images(img1, 0.6, img2, 0.4, 10)
         >>> # result ≈ 0.6*100 + 0.4*50 + 10 = 90
     """
-    raise NotImplementedError("add_weighted_images not yet implemented")
+    return cv2.addWeighted(src1, alpha, src2, beta, gamma)
 
 
 def adjust_brightness(image, brightness_value):
@@ -195,7 +198,7 @@ def adjust_brightness(image, brightness_value):
         >>> dark[0, 0]
         50
     """
-    raise NotImplementedError("adjust_brightness not yet implemented")
+    return cv2.convertScaleAbs(image, alpha=1, beta=brightness_value)
 
 
 def adjust_contrast(image, contrast_factor):
@@ -221,7 +224,7 @@ def adjust_contrast(image, contrast_factor):
         >>> more_contrast = adjust_contrast(img, 1.5)
         >>> less_contrast = adjust_contrast(img, 0.5)
     """
-    raise NotImplementedError("adjust_contrast not yet implemented")
+    return cv2.convertScaleAbs(image, alpha=contrast_factor, beta=0)
 
 
 def adjust_brightness_contrast(image, alpha, beta):
@@ -244,7 +247,7 @@ def adjust_brightness_contrast(image, alpha, beta):
         >>> adjusted = adjust_brightness_contrast(img, 1.2, 30)
         >>> # Each pixel: 1.2 * 100 + 30 = 150
     """
-    raise NotImplementedError("adjust_brightness_contrast not yet implemented")
+    return cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
 
 
 def equalize_histogram_gray(image):
@@ -269,7 +272,7 @@ def equalize_histogram_gray(image):
         >>> equalized = equalize_histogram_gray(img)
         >>> # Output will have better contrast
     """
-    raise NotImplementedError("equalize_histogram_gray not yet implemented")
+    return cv2.equalizeHist(image)
 
 
 def equalize_histogram_color(image):
@@ -294,7 +297,9 @@ def equalize_histogram_color(image):
         >>> equalized.shape
         (100, 100, 3)
     """
-    raise NotImplementedError("equalize_histogram_color not yet implemented")
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv[:, :, 2] = cv2.equalizeHist(hsv[:, :, 2])
+    return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
 
 def apply_affine_transform_opencv(image, src_pts, dst_pts):
@@ -321,7 +326,9 @@ def apply_affine_transform_opencv(image, src_pts, dst_pts):
         >>> result.shape
         (100, 100, 3)
     """
-    raise NotImplementedError("apply_affine_transform_opencv not yet implemented")
+    M = cv2.getAffineTransform(src_pts, dst_pts)
+    rows, cols = image.shape[:2]
+    return cv2.warpAffine(image, M, (cols, rows))
 
 
 def apply_perspective_transform_opencv(image, src_pts, dst_pts):
@@ -348,7 +355,9 @@ def apply_perspective_transform_opencv(image, src_pts, dst_pts):
         >>> result.shape
         (100, 100, 3)
     """
-    raise NotImplementedError("apply_perspective_transform_opencv not yet implemented")
+    M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+    rows, cols = image.shape[:2]
+    return cv2.warpPerspective(image, M, (cols, rows))
 
 
 def rotate_image(image, angle, center=None, scale=1.0):
@@ -377,4 +386,8 @@ def rotate_image(image, angle, center=None, scale=1.0):
         >>> rotated.shape
         (100, 100, 3)
     """
-    raise NotImplementedError("rotate_image not yet implemented")
+    if center is None:
+        center = (image.shape[1] // 2, image.shape[0] // 2)
+    M = cv2.getRotationMatrix2D(center, angle, scale)
+    rows, cols = image.shape[:2]
+    return cv2.warpAffine(image, M, (cols, rows))
