@@ -44,7 +44,12 @@ def compute_image_distance(focal_length, object_distance):
         >>> compute_image_distance(focal_length=-10, object_distance=20)
         -6.666...  # Virtual image (diverging lens)
     """
-    raise NotImplementedError("compute_image_distance not yet implemented")
+    if object_distance <= 0:
+        raise ValueError("object_distance must be greater than 0")
+    try:
+        return 1 / (1 / focal_length - 1 / object_distance)
+    except ZeroDivisionError:
+        raise ValueError("Resulting image distance is undefined")
 
 
 def compute_focal_length(object_distance, image_distance):
@@ -69,7 +74,12 @@ def compute_focal_length(object_distance, image_distance):
         >>> compute_focal_length(object_distance=30, image_distance=15)
         10.0
     """
-    raise NotImplementedError("compute_focal_length not yet implemented")
+    if object_distance <= 0:
+        raise ValueError("object_distance must be greater than 0")
+    try:
+        return 1 / (1 / object_distance + 1 / image_distance)
+    except ZeroDivisionError:
+        raise ValueError("Resulting focal length is undefined")
 
 
 def compute_object_distance(focal_length, image_distance):
@@ -92,7 +102,12 @@ def compute_object_distance(focal_length, image_distance):
         >>> compute_object_distance(focal_length=10, image_distance=15)
         30.0
     """
-    raise NotImplementedError("compute_object_distance not yet implemented")
+    if image_distance == 0:
+        raise ValueError("image_distance must be non-zero")
+    try:
+        return 1 / (1 / focal_length - 1 / image_distance)
+    except ZeroDivisionError:
+        raise ValueError("Resulting object distance is undefined")
 
 
 def compute_magnification(object_distance, image_distance):
@@ -123,7 +138,12 @@ def compute_magnification(object_distance, image_distance):
         >>> compute_magnification(object_distance=15, image_distance=30)
         -2.0  # Inverted, magnified
     """
-    raise NotImplementedError("compute_magnification not yet implemented")
+    if object_distance <= 0:
+        raise ValueError("object_distance must be greater than 0")
+    try:
+        return -image_distance / object_distance
+    except ZeroDivisionError:
+        raise ValueError("Resulting magnification is undefined")
 
 
 def lens_type(focal_length):
@@ -143,7 +163,12 @@ def lens_type(focal_length):
         >>> lens_type(focal_length=-15)
         'diverging'
     """
-    raise NotImplementedError("lens_type not yet implemented")
+    if focal_length > 0:
+        return "converging"
+    elif focal_length < 0:
+        return "diverging"
+    else:
+        raise ValueError("Focal length cannot be zero")
 
 
 def image_type(image_distance):
@@ -154,7 +179,7 @@ def image_type(image_distance):
         image_distance (float): Distance from lens to image in cm
     
     Returns:
-        str: Either "real" (s_i > 0) or "virtual" (s_i < 0)
+        str: Either "real" (s_i > 0) or "virtual" (s_i < 0) or "at_lens" (s_i = 0)
     
     Example:
         >>> image_type(15)
@@ -163,7 +188,12 @@ def image_type(image_distance):
         >>> image_type(-6.67)
         'virtual'
     """
-    raise NotImplementedError("image_type not yet implemented")
+    if image_distance > 0:
+        return "real"
+    elif image_distance < 0:
+        return "virtual"
+    else:
+        return "at_lens"
 
 
 def image_orientation(magnification):
@@ -174,7 +204,7 @@ def image_orientation(magnification):
         magnification (float): Magnification factor m
     
     Returns:
-        str: Either "upright" (m > 0) or "inverted" (m < 0)
+        str: Either "upright" (m > 0) or "inverted" (m < 0) or "no_image" (m = 0)
     
     Example:
         >>> image_orientation(-0.5)
@@ -183,4 +213,9 @@ def image_orientation(magnification):
         >>> image_orientation(0.333)
         'upright'
     """
-    raise NotImplementedError("image_orientation not yet implemented")
+    if magnification > 0:
+        return "upright"
+    elif magnification < 0:
+        return "inverted"
+    else:
+        return "no_image"
