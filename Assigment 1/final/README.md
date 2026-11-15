@@ -3,7 +3,7 @@
 **Computer Vision I** · Máster en Intelixencia Artificial · Universidade da Coruña · 2026/27
 **Group:** Guilherme Guerra Martins · Maira Alejandra Carvajal Chaparro
 
-This folder holds the code and the image behind our report for Assignment 1. Exercises 1 and 2 are theoretical (proof and derivation), so they are only in the report. Exercises 3 to 6 are implemented as small Python modules in `helpers/`, and they all run on our own photo in `data/`.
+This folder holds the code and the image behind our report for Assignment 1. Exercises 1 and 2 are theoretical (proof and derivation), so they are only in the report. Exercises 3 to 6 are implemented as small Python modules in `helpers/`, and they all run on our own photo in `data/`. The notebook `A1_Run.ipynb` runs Exercises 3 to 6 in order with these modules and regenerates every figure of the report.
 
 ## 📋 Contents
 
@@ -11,16 +11,18 @@ This folder holds the code and the image behind our report for Assignment 1. Exe
 | --- | --- | --- |
 | 1 | A rigid change of coordinates preserves distances and angles | Report (proof) |
 | 2 | Rotation matrices about the x-axis and the y-axis | Report (derivation) |
-| 3 | Photo of a cluttered scene, resized to 448×336, read and shown with OpenCV | `helpers/a1_image.py` |
-| 4 | Gabor filter at 4 orientations, combined by the per-pixel maximum, 3 parameter sets | `helpers/a1_gabor.py` |
-| 5 | Canny edge detector, compared with the Gabor result | `helpers/a1_canny.py` |
-| 6 | Gaussian and Laplacian pyramids | `helpers/a1_pyramids.py` |
+| 3 | Photo of a cluttered scene, resized to 448×336, read and shown with OpenCV | `helpers/a1_image.py`, run in `A1_Run.ipynb` |
+| 4 | Gabor filter at 4 orientations, combined by the per-pixel maximum, 3 parameter sets | `helpers/a1_gabor.py`, run in `A1_Run.ipynb` |
+| 5 | Canny edge detector, compared with the Gabor result | `helpers/a1_canny.py`, run in `A1_Run.ipynb` |
+| 6 | Gaussian and Laplacian pyramids | `helpers/a1_pyramids.py`, run in `A1_Run.ipynb` |
 
 ## 🗂️ Structure
 
 ```
 Assignment 1/
 ├── README.md                 # This file
+├── A1_Report.pdf             # The report (Exercises 1 to 6)
+├── A1_Run.ipynb              # Runs Exercises 3 to 6 and saves every figure of the report
 ├── data/
 │   ├── my_scene.png          # Original photo, 5712×4284 pixels
 │   └── scene_448x336.png     # The resized scene used by Exercises 3 to 6
@@ -31,7 +33,15 @@ Assignment 1/
     └── a1_pyramids.py        # Ex. 6: Gaussian pyramid, Laplacian pyramid, reconstruction
 ```
 
+`A1_Run.ipynb` also creates a `figures/` folder with the figures it saves.
+
 ## ⚡ Quick start
+
+### The fastest way: run the notebook
+
+Open `A1_Run.ipynb` in Jupyter or VS Code, keep it next to `helpers/` and `data/`, then *Restart* and *Run All*. Its first cell installs the dependencies into the notebook's own Python. It runs Exercises 3 to 6 in order, shows every result and saves the report figures in `figures/`.
+
+The steps below do the same by hand, one exercise at a time.
 
 ### 1. Install the dependencies
 
